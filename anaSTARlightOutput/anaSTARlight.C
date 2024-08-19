@@ -22,6 +22,8 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     TH2D *hNegPhivsPosPhi  = new TH2D("hNegPhivsPosPhi", "hNegPhivsPosPhi; #mu^{+} #phi; #mu^{-} #phi", 120, -PI, PI, 120, -PI, PI);
     TH3D *hPosPhivsEtavsP = new TH3D("hPosPhivsEtavsP", "hPosPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
     TH3D *hNegPhivsEtavsP = new TH3D("hNegPhivsEtavsP", "hNegPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
+    TH3D *hPosPhivsEtavsP_Full = new TH3D("hPosPhivsEtavsP_Full", "hPosPhivsEtavsP_Full; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
+    TH3D *hNegPhivsEtavsP_Full = new TH3D("hNegPhivsEtavsP_Full", "hNegPhivsEtavsP_Full; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
 
     ifstream infile(Form("%s.out", parSpec.Data()));
 
@@ -97,6 +99,8 @@ void anaSTARlight(TString parSpec = "cohJpsi")
                 hNegEtavsPosEta->Fill(posParMom.Eta(), negParMom.Eta());
                 hNegPhivsPosPhi->Fill(posParMom.Phi(), negParMom.Phi());
             }
+            hPosPhivsEtavsP_Full->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
+            hNegPhivsEtavsP_Full->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
             if(motherPar.Pt()>0.2) continue;
             hPosPhivsEtavsP->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
             hNegPhivsEtavsP->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
@@ -119,6 +123,8 @@ void anaSTARlight(TString parSpec = "cohJpsi")
 
     hPosPhivsEtavsP->Write();
     hNegPhivsEtavsP->Write();
+    hPosPhivsEtavsP_Full->Write();
+    hNegPhivsEtavsP_Full->Write();
     fOut->Close();
 }
 

@@ -20,6 +20,8 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     TH2D *hNegPtvsPosPt    = new TH2D("hNegPtvsPosPt", "hNegPtvsPosPt; #mu^{+} p_{T} (GeV); #mu^{-} p_{T} (GeV)", 500, 0, 5, 500, 0, 5);
     TH2D *hNegEtavsPosEta  = new TH2D("hNegEtavsPosEta", "hNegEtavsPosEta; #mu^{+} #eta; #mu^{-} #eta", 100, -2.5, 2.5, 100, -2.5, 2.5);
     TH2D *hNegPhivsPosPhi  = new TH2D("hNegPhivsPosPhi", "hNegPhivsPosPhi; #mu^{+} #phi; #mu^{-} #phi", 120, -PI, PI, 120, -PI, PI);
+    TH3D *hPosPhivsEtavsP = new TH3D("hPosPhivsEtavsP", "hPosPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
+    TH3D *hNegPhivsEtavsP = new TH3D("hNegPhivsEtavsP", "hNegPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
 
     ifstream infile(Form("%s.out", parSpec.Data()));
 
@@ -74,7 +76,7 @@ void anaSTARlight(TString parSpec = "cohJpsi")
             hnEvts->Fill(0);
             hMvsPtvsRap_Raw->Fill(motherPar.Rapidity(), motherPar.Pt(), motherPar.M());
 
-            if(TMath::Abs(y)>2.4 || TMath::Abs(y)<1.5) continue;
+            if(TMath::Abs(y)>2.4) continue;
 
             hnEvts->Fill(1);
             hMvsPtvsRap_RapSel->Fill(motherPar.Rapidity(), motherPar.Pt(), motherPar.M());
@@ -95,6 +97,9 @@ void anaSTARlight(TString parSpec = "cohJpsi")
                 hNegEtavsPosEta->Fill(posParMom.Eta(), negParMom.Eta());
                 hNegPhivsPosPhi->Fill(posParMom.Phi(), negParMom.Phi());
             }
+            if(motherPar.Pt()>0.2) continue;
+            hPosPhivsEtavsP->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
+            hNegPhivsEtavsP->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
         }
 
     } // reading loop of the input file
@@ -111,6 +116,9 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     hNegPtvsPosPt->Write();
     hNegEtavsPosEta->Write();
     hNegPhivsPosPhi->Write();
+
+    hPosPhivsEtavsP->Write();
+    hNegPhivsEtavsP->Write();
     fOut->Close();
 }
 

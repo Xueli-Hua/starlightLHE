@@ -3,6 +3,7 @@
 
 Double_t shiftDeltaPhi(Double_t dPhi);
 Bool_t   goodMuPair(Double_t EtaD1, Double_t pTD1, Double_t EtaD2, Double_t pTD2);
+Bool_t   goodMu(Double_t EtaD, Double_t pTD);
 
 const Double_t PI = TMath::Pi();
 
@@ -26,9 +27,17 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     TH3D *hNegPhivsEtavsP = new TH3D("hNegPhivsEtavsP", "hNegPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
     TH3D *hPosPhivsEtavsP_MuAcc = new TH3D("hPosPhivsEtavsP_MuAcc", "hPosPhivsEtavsP_MuAcc; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
     TH3D *hNegPhivsEtavsP_MuAcc = new TH3D("hNegPhivsEtavsP_MuAcc", "hNegPhivsEtavsP_MuAcc; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
-    TH3D *hPosPtvsEtavsP_MuAcc = new TH3D("hPosPtvsEtavsP_MuAcc", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
-    TH3D *hNegPtvsEtavsP_MuAcc = new TH3D("hNegPtvsEtavsP_MuAcc", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hPosPtvsEtavsP_MuAcc = new TH3D("hPosPtvsEtavsP_MuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_MuAcc = new TH3D("hNegPtvsEtavsP_MuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
 
+    TH3D *hPosPtvsEtavsP_JpsiY2p4 = new TH3D("hPosPtvsEtavsP_JpsiY2p4", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_JpsiY2p4 = new TH3D("hNegPtvsEtavsP_JpsiY2p4", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hPosPtvsEtavsP_JpsiY1p6 = new TH3D("hPosPtvsEtavsP_JpsiY1p6", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_JpsiY1p6 = new TH3D("hNegPtvsEtavsP_JpsiY1p6", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hPosPtvsEtavsP_JpsiY1p6_MuAcc = new TH3D("hPosPtvsEtavsP_JpsiY1p6_MuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_JpsiY1p6_MuAcc = new TH3D("hNegPtvsEtavsP_JpsiY1p6_MuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hPosPtvsEtavsP_DiMuAcc = new TH3D("hPosPtvsEtavsP_DiMuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_DiMuAcc = new TH3D("hNegPtvsEtavsP_DiMuAcc", "; p (GeV); #eta; pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
     ifstream infile(Form("%s.out", parSpec.Data()));
 
     string temp_string, temp;
@@ -104,13 +113,24 @@ void anaSTARlight(TString parSpec = "cohJpsi")
                 hNegPhivsPosPhi->Fill(posParMom.Phi(), negParMom.Phi());
             }
 
-	    if (TMath::Abs(y)<1.6 || TMath::Abs(y)>2.4) continue;
-	    if(!goodMuPair(posParMom.Eta(),posParMom.Pt(),negParMom.Eta(),negParMom.Pt()) continue;
+            hPosPtvsEtavsP_JpsiY2p4->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+            hNegPtvsEtavsP_JpsiY2p4->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
 
-            hPosPhivsEtavsP_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
-            hNegPhivsEtavsP_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
-            hPosPtvsEtavsP_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
-            hNegPtvsEtavsP_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+	    if (TMath::Abs(y)>1.6) {
+		hPosPtvsEtavsP_JpsiY1p6->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+            	hNegPtvsEtavsP_JpsiY1p6->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+		if(goodMuPair(posParMom.Eta(),posParMom.Pt(),negParMom.Eta(),negParMom.Pt())) {
+		   hPosPtvsEtavsP_JpsiY1p6_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+            	   hNegPtvsEtavsP_JpsiY1p6_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+		}
+	    }
+	    if(goodMu(posParMom.Eta(),posParMom.Pt())) hPosPtvsEtavsP_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+	    if(goodMu(negParMom.Eta(),negParMom.Pt())) hNegPtvsEtavsP_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+
+	    if(!goodMuPair(posParMom.Eta(),posParMom.Pt(),negParMom.Eta(),negParMom.Pt())) continue;
+	    hPosPtvsEtavsP_DiMuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+            hNegPtvsEtavsP_DiMuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+
             if(motherPar.Pt()>0.2) continue;
             hPosPhivsEtavsP->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
             hNegPhivsEtavsP->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
@@ -118,7 +138,7 @@ void anaSTARlight(TString parSpec = "cohJpsi")
 
     } // reading loop of the input file
 
-    TFile *fOut = new TFile(Form("%s.root", parSpec.Data()), "recreate");
+    TFile *fOut = new TFile(Form("%sAcc.root", parSpec.Data()), "recreate");
     fOut->cd();
     hnEvts->Write();
     hMvsPtvsRap_Raw->Write();
@@ -137,6 +157,15 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     hNegPhivsEtavsP_MuAcc->Write();
     hPosPtvsEtavsP_MuAcc->Write();
     hNegPtvsEtavsP_MuAcc->Write();
+
+    hPosPtvsEtavsP_JpsiY2p4->Write();
+    hNegPtvsEtavsP_JpsiY2p4->Write();
+    hPosPtvsEtavsP_JpsiY1p6->Write();
+    hNegPtvsEtavsP_JpsiY1p6->Write();
+    hPosPtvsEtavsP_JpsiY1p6_MuAcc->Write();
+    hNegPtvsEtavsP_JpsiY1p6_MuAcc->Write();
+    hPosPtvsEtavsP_DiMuAcc->Write();
+    hNegPtvsEtavsP_DiMuAcc->Write();
     fOut->Close();
 }
 
@@ -159,4 +188,11 @@ Bool_t goodMuPair(Double_t EtaD1, Double_t pTD1, Double_t EtaD2, Double_t pTD2)
 	if(pTD1 < mTrkPtTh1 || pTD2 < mTrkPtTh2) return kFALSE;
 
    	return kTRUE;
+}
+Bool_t goodMu(Double_t EtaD, Double_t pTD)
+{
+	Double_t mTrkPtTh = fTrkAcc->Eval(EtaD);
+	if(pTD < mTrkPtTh) return kFALSE;
+
+	return kTRUE;
 }

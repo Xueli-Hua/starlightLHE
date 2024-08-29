@@ -101,6 +101,7 @@ void anaSTARlight(TString parSpec = "cohJpsi")
                 hNegEtavsPosEta->Fill(posParMom.Eta(), negParMom.Eta());
                 hNegPhivsPosPhi->Fill(posParMom.Phi(), negParMom.Phi());
             }
+	    if (TMath::Abs(y)<1.6) continue;
             hPosPhivsEtavsP_Full->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
             hNegPhivsEtavsP_Full->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
             hPosPtvsEtavsP_Full->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());

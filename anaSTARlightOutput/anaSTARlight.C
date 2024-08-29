@@ -1,6 +1,8 @@
 #include "headers.h" 
+#include "funUtil.h"
 
 Double_t shiftDeltaPhi(Double_t dPhi);
+Bool_t   goodMuPair(Double_t EtaD1, Double_t pTD1, Double_t EtaD2, Double_t pTD2);
 
 const Double_t PI = TMath::Pi();
 
@@ -22,10 +24,10 @@ void anaSTARlight(TString parSpec = "cohJpsi")
     TH2D *hNegPhivsPosPhi  = new TH2D("hNegPhivsPosPhi", "hNegPhivsPosPhi; #mu^{+} #phi; #mu^{-} #phi", 120, -PI, PI, 120, -PI, PI);
     TH3D *hPosPhivsEtavsP = new TH3D("hPosPhivsEtavsP", "hPosPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
     TH3D *hNegPhivsEtavsP = new TH3D("hNegPhivsEtavsP", "hNegPhivsEtavsP; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
-    TH3D *hPosPhivsEtavsP_Full = new TH3D("hPosPhivsEtavsP_Full", "hPosPhivsEtavsP_Full; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
-    TH3D *hNegPhivsEtavsP_Full = new TH3D("hNegPhivsEtavsP_Full", "hNegPhivsEtavsP_Full; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
-    TH3D *hPosPtvsEtavsP_Full = new TH3D("hPosPtvsEtavsP_Full", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
-    TH3D *hNegPtvsEtavsP_Full = new TH3D("hNegPtvsEtavsP_Full", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hPosPhivsEtavsP_MuAcc = new TH3D("hPosPhivsEtavsP_MuAcc", "hPosPhivsEtavsP_MuAcc; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
+    TH3D *hNegPhivsEtavsP_MuAcc = new TH3D("hNegPhivsEtavsP_MuAcc", "hNegPhivsEtavsP_MuAcc; p (GeV); #eta; #phi; Entries", 500, 0, 5, 100, -2.5, 2.5, 120, -PI, PI);
+    TH3D *hPosPtvsEtavsP_MuAcc = new TH3D("hPosPtvsEtavsP_MuAcc", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
+    TH3D *hNegPtvsEtavsP_MuAcc = new TH3D("hNegPtvsEtavsP_MuAcc", "; p (GeV); #eta; #pt; Entries", 500, 0, 5, 100, -2.5, 2.5, 500, 0, 5);
 
     ifstream infile(Form("%s.out", parSpec.Data()));
 
@@ -101,11 +103,14 @@ void anaSTARlight(TString parSpec = "cohJpsi")
                 hNegEtavsPosEta->Fill(posParMom.Eta(), negParMom.Eta());
                 hNegPhivsPosPhi->Fill(posParMom.Phi(), negParMom.Phi());
             }
-	    if (TMath::Abs(y)<1.6) continue;
-            hPosPhivsEtavsP_Full->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
-            hNegPhivsEtavsP_Full->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
-            hPosPtvsEtavsP_Full->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
-            hNegPtvsEtavsP_Full->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
+
+	    if (TMath::Abs(y)<1.6 || TMath::Abs(y)>2.4) continue;
+	    if(!goodMuPair(posParMom.Eta(),posParMom.Pt(),negParMom.Eta(),negParMom.Pt()) continue;
+
+            hPosPhivsEtavsP_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
+            hNegPhivsEtavsP_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
+            hPosPtvsEtavsP_MuAcc->Fill(posParMom.P(), posParMom.Eta(), posParMom.Pt());
+            hNegPtvsEtavsP_MuAcc->Fill(negParMom.P(), negParMom.Eta(), negParMom.Pt());
             if(motherPar.Pt()>0.2) continue;
             hPosPhivsEtavsP->Fill(posParMom.P(), posParMom.Eta(), posParMom.Phi());
             hNegPhivsEtavsP->Fill(negParMom.P(), negParMom.Eta(), negParMom.Phi());
@@ -128,10 +133,10 @@ void anaSTARlight(TString parSpec = "cohJpsi")
 
     hPosPhivsEtavsP->Write();
     hNegPhivsEtavsP->Write();
-    hPosPhivsEtavsP_Full->Write();
-    hNegPhivsEtavsP_Full->Write();
-    hPosPtvsEtavsP_Full->Write();
-    hNegPtvsEtavsP_Full->Write();
+    hPosPhivsEtavsP_MuAcc->Write();
+    hNegPhivsEtavsP_MuAcc->Write();
+    hPosPtvsEtavsP_MuAcc->Write();
+    hNegPtvsEtavsP_MuAcc->Write();
     fOut->Close();
 }
 
@@ -146,4 +151,12 @@ Double_t shiftDeltaPhi(Double_t dPhi)
         dPhi -= 2 * PI;
 
     return dPhi;
+}
+Bool_t goodMuPair(Double_t EtaD1, Double_t pTD1, Double_t EtaD2, Double_t pTD2)
+{
+	Double_t mTrkPtTh1  = fTrkAcc->Eval(EtaD1);
+	Double_t mTrkPtTh2  = fTrkAcc->Eval(EtaD2);
+	if(pTD1 < mTrkPtTh1 || pTD2 < mTrkPtTh2) return kFALSE;
+
+   	return kTRUE;
 }
